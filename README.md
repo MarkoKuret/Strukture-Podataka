@@ -1,4 +1,2 @@
 # Strukture-Podataka
-FESB - Strukture Podataka
-Student: Marko Kuret
-Rješeni zadaci s vježbi. 
+FESB - Rješeni zadaci iz kolegija strukture podataka (Marko Kuret) 
