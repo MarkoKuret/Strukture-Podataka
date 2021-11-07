@@ -166,8 +166,9 @@ int pokreniIzbornik(position head)
 //fja prima intiger unos korisnika i radi provjeru
 int unosBroja(void)
 {
-    int c, broj;
-    c = scanf("%d", &broj);
+    int c = 0;
+    int broj = -1;
+    c = scanf(" %d", &broj);
 
     if (c != 1)
     {
@@ -234,6 +235,11 @@ int dodajNaRub(position head, int opcija)
     position tmp = NULL;
 
     novaOsoba = stvoriElement();
+    if(novaOsoba == NULL)
+    {
+        printf("Neuspjesan unos! ");
+        return EXIT_FAILURE;
+    }
     unosPodataka(novaOsoba);
     
     // ako je head->next NULL, nema elemenata u listi i svakako je dodavanje na pocetak
@@ -255,6 +261,10 @@ int dodajNaRub(position head, int opcija)
             novaOsoba->next = NULL;
             tmp->next = novaOsoba;
             break;
+
+        default:
+            printf("Greška u dodavanju");
+            return EXIT_FAILURE;
     }
 
     return 0;
