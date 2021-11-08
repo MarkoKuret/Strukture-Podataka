@@ -4,6 +4,8 @@
 
 #define MAX 50
 
+
+
 typedef struct poli* position;
 
 typedef struct poli
@@ -125,6 +127,7 @@ int citajDatoteku(char *imeDat, position head1, position head2)
     int potencija = 0;
     int n = 0;
     int i = 0;
+    int provjera = 0;
     
     FILE * fp = NULL;
 
@@ -143,7 +146,12 @@ int citajDatoteku(char *imeDat, position head1, position head2)
         newBuffer = buffer;
         while (strlen(newBuffer) > 0)
         {
-            sscanf(newBuffer, " %d %d %n", &faktor, &potencija, &n);
+            provjera = sscanf(newBuffer, " %d %d %n", &faktor, &potencija, &n);
+            if (provjera != 2)
+            {
+                printf("Nevaljan format datoteke!");
+                return EXIT_FAILURE;
+            }
             newBuffer += n;
             if (i == 0)
                 dodajSortirano(head1, faktor, potencija);
