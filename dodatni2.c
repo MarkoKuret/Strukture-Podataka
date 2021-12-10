@@ -34,7 +34,7 @@ int main()
     Node head = {.next = NULL};
     position headPtr = &head;
 
-
+    //testni podaci 
     Struktura test = {.string = "test"};
     int i = 5;
     int m = 10;
@@ -109,6 +109,7 @@ int ispis(position head)
         brojac++;
         printf("\n====ELEMENT %d====\n", brojac);
         
+        //hard codano za testne podatke, mogu popravit ako treba
         if(brojac == 1)
             printf("string: %s\n", ((Struktura*)(tmp + sizeof(Node)))->string);
 
