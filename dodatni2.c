@@ -142,11 +142,3 @@ int brisanje(position head)
 
     return EXIT_SUCCESS;
 }
-
-/*
-#define genericIspis(X) _Generic((X), int: ispisInt, \
-                                      float: ispisFloat, \
-                                      char*: ispisString, \
-                                      double* ispisDouble, \
-                                      default: ispisDefault, \
-                                      )(X)*/
