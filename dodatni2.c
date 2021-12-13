@@ -34,7 +34,6 @@ int main()
     Node head = {.next = NULL};
     position headPtr = &head;
 
-    //testni podaci 
     Struktura test = {.string = "test"};
     int i = 5;
     int m = 10;
@@ -72,7 +71,7 @@ position stvoriElement(int velicinaVarijable)
 
 int unosPodataka(position noviNode, int velicinaVarijable, void* varijabla)
 {   
-    *((noviNode + sizeof(Node))) = *((position)varijabla);
+    memcpy((noviNode + sizeof(Node)), varijabla, sizeof(velicinaVarijable));
 
     return EXIT_SUCCESS;
 }
@@ -82,7 +81,7 @@ int dodajNaPocetak(position head, int velicinaVarijable, void* varijabla)
     position noviNode = NULL;
 
     noviNode = stvoriElement(velicinaVarijable);
-    if(noviNode == NULL)
+    if(NULL == noviNode)
         return EXIT_FAILURE;
 
     unosPodataka(noviNode, velicinaVarijable, varijabla);
@@ -109,7 +108,6 @@ int ispis(position head)
         brojac++;
         printf("\n====ELEMENT %d====\n", brojac);
         
-        //hard codano za testne podatke, mogu popravit ako treba
         if(brojac == 1)
             printf("string: %s\n", ((Struktura*)(tmp + sizeof(Node)))->string);
 
