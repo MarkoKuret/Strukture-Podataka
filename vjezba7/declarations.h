@@ -3,11 +3,6 @@
 
 #define MAX_STRING 44
 
-typedef enum {
-    CONTINUE = 2,
-    EXIT = 3,
-} returnType;
-
 struct _dir;
 typedef struct _dir* Position;
 typedef struct _dir
@@ -37,6 +32,5 @@ Position pop(StackP head);
 int navigation(Position parent, StackP stackHead);
 int printChildren(Position current);
 int printPath(Position current, StackP stackHead);
-
 
 #endif 
