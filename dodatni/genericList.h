@@ -1,16 +1,16 @@
+#ifndef GENERIC_LIST
+#define GENERIC_LIST
+
 #include "declarations.h"
+#include "stog.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-position stvoriElement(int velicinaVarijable)
+position stvoriElement(size_t velicinaVarijable)
 {
     position noviNode = NULL;
 
-    noviNode = (position)malloc(sizeof(Node) + velicinaVarijable);
+    noviNode = (position)malloc((sizeof(Node) + velicinaVarijable));
 
-    if(!noviNode)
+    if(NULL == noviNode)
     {
         perror("Greška alokacije! ");
         return NULL;
@@ -20,14 +20,13 @@ position stvoriElement(int velicinaVarijable)
     return noviNode;
 }
 
-int unosPodataka(position noviNode, int velicinaVarijable, void* varijabla)
-{   
-    memcpy((noviNode + sizeof(Node)), varijabla, sizeof(velicinaVarijable));
-
+int unosPodataka(position noviNode, void* varijabla, size_t velicinaVarijable)
+{
+    memcpy((noviNode + sizeof(Node)), varijabla, velicinaVarijable);
     return EXIT_SUCCESS;
 }
 
-int dodajNaPocetak(position head, int velicinaVarijable, void* varijabla)
+int dodajNaPocetak(position head, stogP stogHead, tipVarijable tip, void* varijabla, size_t velicinaVarijable)
 {
     position noviNode = NULL;
 
@@ -35,7 +34,9 @@ int dodajNaPocetak(position head, int velicinaVarijable, void* varijabla)
     if(NULL == noviNode)
         return EXIT_FAILURE;
 
-    unosPodataka(noviNode, velicinaVarijable, varijabla);
+    dodajStogElement(stogHead, tip);
+
+    unosPodataka(noviNode, varijabla, velicinaVarijable);
 
     noviNode->next = head->next;
     head->next = noviNode;
@@ -43,10 +44,11 @@ int dodajNaPocetak(position head, int velicinaVarijable, void* varijabla)
     return EXIT_SUCCESS;
 }
 
-int ispis(position head)
+int ispisListe(position head, stogP stogHead)
 {
     position tmp = NULL;
-    int brojac = 0;
+    tipVarijable tip = DEFAULT;
+    int counter = 0;
 
     if(head->next != NULL)
         tmp = head->next;
@@ -55,18 +57,51 @@ int ispis(position head)
 
     printf("\n--ISPIS:--\n");
 
-    while(tmp)
+    while(tmp != NULL)
     {
-        printf("Lokacija podatka: %p\n", (tmp + sizeof(Node)));
+        counter++;
+        tip = procitajStog(stogHead, counter);
+        ispisElementa(tmp, tip);
         tmp = tmp->next;   
+        
     }
-
     puts("");
 
     return EXIT_SUCCESS;
 }
 
-int brisanje(position head)
+int ispisElementa(position element, tipVarijable tip)
+{
+    switch(tip)
+    {
+        case INT:
+            printf("Int: %d\n", *((int*)(element + sizeof(Node))));
+            break;
+
+        case DOUBLE:
+            printf("Double: %lf\n", *((double*)(element + sizeof(Node))));
+            break;
+
+        case FLOAT:
+            printf("Float: %f\n", *((float*)(element + sizeof(Node))));
+            break;
+
+        case CHAR:
+            printf("Char: %c\n", *((char*)(element + sizeof(Node))));
+            break;
+
+        case STRING:
+            printf("String: %s\n", ((char*)(element + sizeof(Node))));
+            break;
+
+        case DEFAULT:
+        default:
+            printf("Adresa podatka: %p", (element + sizeof(Node)));
+    }
+    return EXIT_SUCCESS;
+}
+
+int brisanjeListe(position head, stogP stogHead)
 {
     position zaBrisanje = head->next;
     position sljedeci = NULL;
@@ -79,6 +114,39 @@ int brisanje(position head)
     }
     
     head->next = NULL;
+    
+    brisanjeStoga(stogHead);
 
     return EXIT_SUCCESS;
 }
+
+int brisanjeElementa(position head, stogP stogHead, void* varijabla)
+{
+    tipVarijable tip = DEFAULT;
+    int counter = 0;
+    position tmp = head;
+    position prosli = NULL;
+
+    while(tmp != NULL)
+    {
+        if(*((int*)(tmp + sizeof(Node))) == *(int*)varijabla)
+        {
+            prosli->next = tmp->next;
+            printf("Brisem element na lokaciji %p...\n", tmp);
+            free(tmp);
+            oslobodiStogElement(stogHead, counter);
+            printf("Element izbrisan!\n");  
+           
+            return EXIT_SUCCESS;
+        }
+        counter++;
+        prosli = tmp;
+        tmp = tmp->next;
+    }
+
+    printf("Element ne postoji! ");
+
+    return EXIT_SUCCESS;
+}
+
+#endif 
