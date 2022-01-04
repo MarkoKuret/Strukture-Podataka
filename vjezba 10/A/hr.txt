@@ -1,0 +1,4 @@
+Split 350000
+Zagreb 1000000
+Borovo 19000
+Dubronik 20000
