@@ -44,7 +44,7 @@ int main()
     dodajNaPocetak(headPtr, sizeof(int), &m);
     dodajNaPocetak(headPtr, sizeof(int), &j);
     dodajNaPocetak(headPtr, sizeof(char), &c);
-    dodajNaPocetak(headPtr, sizeof(test), &test);
+    dodajNaPocetak(headPtr, sizeof(test.string), &test);
 
     ispis(headPtr);
     brisanje(headPtr);
@@ -96,7 +96,12 @@ int ispis(position head)
 {
     position tmp = NULL;
     int brojac = 0;
+    int i = 0;
+    int broj = 0;
     char string[MAX_STRING];
+    FILE * dat = NULL;
+
+    dat = fopen(dat, "w");
 
     if(head->next != NULL)
         tmp = head->next;
@@ -107,16 +112,12 @@ int ispis(position head)
     {
         brojac++;
         printf("\n====ELEMENT %d====\n", brojac);
+        fscanf(dat, "%s", *((char*)(tmp + sizeof(Node))));
+        fgets(string, MAX_STRING,  dat);
+
+        printf(string, "%s", string, &broj);
         
-        if(brojac == 1)
-            printf("string: %s\n", ((Struktura*)(tmp + sizeof(Node)))->string);
 
-        else if(brojac == 2)
-            printf("Char: %c\n", *((char*)(tmp + sizeof(Node))));
-
-        else
-            printf("Int: %d\n", *((int*)(tmp + sizeof(Node))));
-         
         tmp = tmp->next;   
     }
 
