@@ -1,4 +1,4 @@
-siromsasni 30
-pomozimo 14
-krokodil 420
-hrana 53912
+Harare 1500000
+Bulawayo 650000
+Chitungwiza 350000
+Mutare 180000

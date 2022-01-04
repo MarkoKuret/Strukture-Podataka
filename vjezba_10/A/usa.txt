@@ -1,4 +1,4 @@
-Washington 3500000
-NewYork 11000000
-LosAngeles 5000000
-Chicago 35000000
+Washington 350
+NewYork 110
+LosAngeles 500
+Chicago 350

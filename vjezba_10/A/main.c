@@ -12,18 +12,7 @@ int main()
     Country head = {.name = "", .next = NULL};
     countryPos headPtr = &head;
 
-   /* countryAddInOrder(headPtr, "Argentina");
-    countryAddInOrder(headPtr, "Brazil");
-    countryAddInOrder(headPtr, "Croatia");
-
-    root = cityAdd(root, "Split", 21);
-    root = cityAdd(root, "Zagreb", 110);
-    root = cityAdd(root, "Dubrovnik", 3);
-    root = cityAdd(root, "Borovo", 1);*/
-
     inputFromFile(headPtr, "drzave.txt");
-
-    printf("test");
 
     return EXIT_SUCCESS;
 }
@@ -109,9 +98,9 @@ int inputFromFile(countryPos head, char *fileName)
 {
     FILE *mainFile = NULL;
     FILE *citiesFile = NULL;
-    char *countryName = "";
-    char *cityName = "";
-    char *citiesFileName = "";
+    char countryName[MAX] = {"0"};
+    char cityName[MAX] = {"0"};
+    char citiesFileName[MAX] = {"0"};
     int population = 0;
     countryPos countryCurrent = NULL;
 
@@ -124,17 +113,18 @@ int inputFromFile(countryPos head, char *fileName)
 
     while (!feof(mainFile))
     {
+
         fscanf(mainFile, " %s %s", countryName, citiesFileName);
         countryCurrent = countryAddInOrder(head, countryName);
 
         citiesFile = fopen(citiesFileName, "r");
-        if(NULL == citiesFile)
+        if (NULL == citiesFile)
         {
             perror("No such cities file! ");
             return EXIT_FAILURE;
         }
 
-        while(!feof(citiesFile))
+        while (!feof(citiesFile))
         {
             fscanf(citiesFile, " %s %d", cityName, &population);
             countryCurrent->root = cityAdd(countryCurrent->root, cityName, population);
