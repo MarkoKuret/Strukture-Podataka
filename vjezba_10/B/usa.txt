@@ -1,0 +1,4 @@
+Washington 350
+NewYork 110
+LosAngeles 500
+Chicago 350
