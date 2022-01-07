@@ -1,44 +1,12 @@
 /*vjezba
 8. Napisati program koji omogućava rad s binarnim stablom pretraživanja. Treba
-omogućiti unošenje novog dataa u stablo, ispis elemenata 
+omogućiti unošenje novog dataa u stablo, ispis elemenata
 (inorder, preorder, postorder i level order), brisanje i pronalaženje nekog dataa.
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef enum {
-	INSERT = 1,
-	INORDER = 2,
-	PREORDER = 3,
-	POSTORDER = 4,
-	FIND = 5,
-	DELETE = 6,
-} inputOption;
-
-struct _node;
-typedef struct _node* Position;
-typedef struct _node
-{
-	int data;
-	Position right;
-	Position left;
-} Node;
-
-Position createNode(int data);
-Position insertNode(int data, Position root);
-
-int printInOrder(Position root);
-int printPreOrder(Position root);
-int printPostOrder(Position root);
-//int printLevelOrder(Position root);
-
-Position deleteNode(Position root, int data);
-Position findMinimum(Position root);
-Position findNode(Position root, int data);
-
-int menu(Position root);
+#include "declarations.h"
 
 int main()
 {
@@ -55,76 +23,83 @@ int menu(Position root)
 	int check = 0;
 	Position tmp = NULL;
 
-	while(1)
+	while (1)
 	{
-		printf("--OPITONS:\n\t 1 - add new data\n\t 2 - inorder print\n\t 3 - preorder"
-			"\n\t 4 - postorder\n\t 5 - find by data\n\t 6 - delete by data\n\t PRESS ANY OTHER KEY FOR EXIT\n");
-		printf("--Option: ");
-		scanf(" %d", &option);
-		
+		printf("\n--OPITONS:\n\t1 - add new data\n\tprint:\n\t  2 - inorder\n\t  3 - preorder"
+			   "\n\t  4 - postorder\n\t  5 - level order\n\t6 - find by data\n\t7 - delete by data\n\tPRESS ANY OTHER KEY FOR EXIT\n");
+		printf("\n--Option: ");
+		check = scanf(" %d", &option);
+			if (check != 1)
+			{
+				printf("\nexiting...");
+				return EXIT_FAILURE;
+			}
+
 		switch (option)
 		{
-			case INSERT:
-				printf("Insert data: ");
-				check = scanf(" %d", &data);
-				if (check != 1)
-				{
-					printf("INVALID DATA TYPE!\nexiting...");
-					return EXIT_FAILURE;
-				}
-	
-				root = insertNode(data, root);
-				break;
+		case INSERT:
+			printf("Insert data: ");
+			check = scanf(" %d", &data);
+			if (check != 1)
+			{
+				printf("INVALID DATA TYPE!\nexiting...");
+				return EXIT_FAILURE;
+			}
 
-			case INORDER:
-				printInOrder(root);
-				break;
+			root = insertNode(data, root);
+			break;
 
-			case PREORDER:
-				printPreOrder(root);
-				break;
+		case INORDER:
+			printInOrder(root);
+			break;
 
-			case POSTORDER:
-				printPostOrder(root);
-				break;
+		case PREORDER:
+			printPreOrder(root);
+			break;
 
-			case FIND:
-				printf("Find element by data: ");
-				check = scanf(" %d", &data);
-				if (check != 1)
-				{
-					printf("INVALID DATA TYPE!\nexiting...");
-					return EXIT_FAILURE;
-				}
-	
+		case POSTORDER:
+			printPostOrder(root);
+			break;
 
-				tmp = findNode(root, data);
+		case LEVEL_ORDER:
+			printLevelOrder(root);
+			break;
 
-				if (tmp != NULL)
-					printf("Found element %d in location %p\n", tmp->data, tmp);
-				else
-					printf("Element not found!\n");
+		case FIND:
+			printf("Find element by data: ");
+			check = scanf(" %d", &data);
+			if (check != 1)
+			{
+				printf("INVALID DATA TYPE!\nexiting...");
+				return EXIT_FAILURE;
+			}
 
-				break;
+			tmp = findNode(root, data);
 
-			case DELETE:
-				printf("Delete element by data: ");
-				check = scanf(" %d", &data);
-				if (check != 1)
-				{
-					printf("INVALID DATA TYPE!\nexiting...");
-					return EXIT_FAILURE;
-				}
-	
+			if (tmp != NULL)
+				printf("Found element %d in location %p\n", tmp->data, tmp);
+			else
+				printf("Element not found!\n");
 
-				root = deleteNode(root, data);
-				break;
+			break;
 
-			default:
-				printf("exiting...\n\n");
-				return EXIT_SUCCESS;
+		case DELETE:
+			printf("Delete element by data: ");
+			check = scanf(" %d", &data);
+			if (check != 1)
+			{
+				printf("INVALID DATA TYPE!\nexiting...");
+				return EXIT_FAILURE;
+			}
+
+			root = deleteNode(root, data);
+			break;
+
+		default:
+			printf("exiting...\n\n");
+			return EXIT_SUCCESS;
 		}
-	} 
+	}
 
 	return EXIT_SUCCESS;
 }
@@ -157,7 +132,7 @@ Position insertNode(int data, Position root)
 		root->right = insertNode(data, root->right);
 
 	return root;
-}	
+}
 
 int printInOrder(Position root)
 {
@@ -192,6 +167,57 @@ int printPostOrder(Position root)
 	return EXIT_SUCCESS;
 }
 
+int getHeight(Position root)
+{
+	int rmax = 0;
+	int lmax = 0;
+
+	if (NULL == root)
+		return 0;
+
+	lmax = getHeight(root->left);
+	rmax = getHeight(root->right);
+
+	if (lmax > rmax)
+		return lmax + 1;
+	else
+		return rmax + 1;
+}
+
+int printCurrentLevel(Position root, int height)
+{
+	if (NULL == root)
+	{
+		printf("   ");
+		return EXIT_SUCCESS;
+	}
+	if (height == 1)
+		printf("|%d| ", root->data);
+	else if (height > 1)
+	{
+		printCurrentLevel(root->left, height - 1);
+		printCurrentLevel(root->right, height - 1);
+	}
+	return EXIT_SUCCESS;
+}
+
+int printLevelOrder(Position root)
+{
+	int height = 0;
+	int i = 0;
+	int j = 0;
+	height = getHeight(root);
+
+	for (i = 1; i <= height; i++)
+	{
+		for(j = height; j > i; j--)
+			printf("  ");
+		printCurrentLevel(root, i);
+		puts("");
+	}
+	return EXIT_SUCCESS;
+}
+
 Position deleteNode(Position root, int data)
 {
 	Position tmp;
@@ -212,7 +238,7 @@ Position deleteNode(Position root, int data)
 			tmp = findMinimum(root->right);
 			root->data = tmp->data;
 			root->right = deleteNode(root->right, tmp->data);
-		}	
+		}
 		else
 		{
 			tmp = root;
