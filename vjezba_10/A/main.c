@@ -168,7 +168,7 @@ int citiesBiggerThan(cityPos root, int min_population)
         return EXIT_SUCCESS;
 
     if (root->population < min_population)
-        return EXIT_SUCCESS;
+        citiesBiggerThan(root->right, min_population);
     else
     {
         printf("City %s, population = %d\n", root->name, root->population);
