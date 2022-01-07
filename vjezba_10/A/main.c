@@ -10,9 +10,42 @@ drave lista, gradovi stabla*/
 int main()
 {
     Country head = {.name = "", .next = NULL};
-    countryPos headPtr = &head;
 
-    inputFromFile(headPtr, "drzave.txt");
+    inputFromFile(&head, "files/countries.txt");
+
+    menu(&head);
+   
+    countriesDelete(&head);
+
+    return EXIT_SUCCESS;
+}
+
+//main menu
+int menu(countryPos head)
+{
+    countryPos tmp = NULL;
+    char name[MAX] = "0";
+    int min_population = 0;
+
+    printf("Type exit for exiting!\nSearch country: ");
+    while(scanf(" %s", name) == 1)
+    {
+        if (strcmp(name, "exit") == 0)
+            break;
+        printf("Minimal city population: ");
+        if (scanf(" %d", &min_population) != 1)
+        {
+            printf("Invalid input!\n ");
+            break;
+        }
+        tmp = countryFindByName(head, name);
+        if (tmp != NULL)
+            citiesBiggerThan(tmp->root, min_population);
+        else
+            printf("No such country!\n");
+        
+        printf("\nSearch country: ");
+    }
 
     return EXIT_SUCCESS;
 }
@@ -51,6 +84,42 @@ countryPos countryAddInOrder(countryPos head, char *name)
     tmp->next = newCountry;
 
     return newCountry;
+}
+
+countryPos countryFindByName(countryPos head, char *name)
+{
+    countryPos tmp = head;
+
+    while (NULL != tmp)
+    {
+        if (strcmp(tmp->name, name) == 0)
+            return tmp;
+        tmp = tmp->next;
+    }
+
+    return NULL;
+}
+
+int countriesDelete(countryPos head)
+{
+
+    countryPos current = head->next;
+    countryPos tmp = NULL;
+
+    printf("Deleting all allocated data...\n");
+    while (current != NULL)
+    {
+        tmp = current->next;
+        citiesDelete(current->root);
+        free(current);
+        current = tmp;
+    }
+
+    head->next = NULL;
+
+    printf("Deleted!\n");
+
+    return EXIT_SUCCESS;
 }
 
 //-------CITIES TREE--------//
@@ -93,6 +162,35 @@ cityPos cityAdd(cityPos root, char *name, int population)
     return root;
 }
 
+int citiesBiggerThan(cityPos root, int min_population)
+{
+    if (NULL == root)
+        return EXIT_SUCCESS;
+
+    if (root->population < min_population)
+        citiesBiggerThan(root->right, min_population);
+    else
+    {
+        printf("City %s, population = %d\n", root->name, root->population);
+        citiesBiggerThan(root->right, min_population);
+        citiesBiggerThan(root->left, min_population);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int citiesDelete(cityPos root)
+{
+    if (NULL == root)
+        return EXIT_SUCCESS;
+
+    citiesDelete(root->left);
+    citiesDelete(root->right);
+    free(root);
+
+    return EXIT_SUCCESS;
+}
+
 //--------FILE--------//
 int inputFromFile(countryPos head, char *fileName)
 {
@@ -100,7 +198,7 @@ int inputFromFile(countryPos head, char *fileName)
     FILE *citiesFile = NULL;
     char countryName[MAX] = {"0"};
     char cityName[MAX] = {"0"};
-    char citiesFileName[MAX] = {"0"};
+    char citiesFileName[MAX] = "0";
     int population = 0;
     countryPos countryCurrent = NULL;
 
@@ -123,7 +221,6 @@ int inputFromFile(countryPos head, char *fileName)
             perror("No such cities file! ");
             return EXIT_FAILURE;
         }
-
         while (!feof(citiesFile))
         {
             fscanf(citiesFile, " %s %d", cityName, &population);
