@@ -1,4 +1,0 @@
-Hrvatska hr.txt
-Engleska eng.txt
-Amerika usa.txt
-Zimbabwe zw.txt

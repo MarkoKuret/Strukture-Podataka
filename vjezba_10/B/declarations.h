@@ -25,12 +25,19 @@ typedef struct _country
 // Country - tree - functions
 countryPos countryCreate(char *name);
 countryPos countryAdd(countryPos root, countryPos current, char *name);
+countryPos countryFindByName(countryPos root, char *name);
+int countriesDelete(countryPos root);
 
 // Cities - linked list - functions
 cityPos cityCreate(char *name, int population);
 int cityAddInOrder(countryPos country, char *name, int population);
+int citiesBiggerThan(cityPos head, int min_population);
+int citiesDelete(cityPos head);
 
 // File functions
 countryPos inputFromFile(countryPos root, char *fileName);
+
+//MENU
+int menu(countryPos root);
 
 #endif

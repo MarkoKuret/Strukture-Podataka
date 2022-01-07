@@ -11,7 +11,41 @@ int main()
 {
     countryPos root = NULL;
 
-    root = inputFromFile(root, "drzave.txt");
+    root = inputFromFile(root, "files/countries.txt");
+
+    menu(root);
+    countriesDelete(root);
+    printf("Deleted data!\n");
+
+    return EXIT_SUCCESS;
+}
+
+//MENU
+int menu(countryPos root)
+{
+    countryPos tmp = NULL;
+    char name[MAX] = "0";
+    int min_population = 0;
+
+    printf("Type exit for exiting!\nSearch country: ");
+    while(scanf(" %s", name) == 1)
+    {
+        if (strcmp(name, "exit") == 0)
+            break;
+        printf("Minimal city population: ");
+        if (scanf(" %d", &min_population) != 1)
+        {
+            printf("Invalid input!\n ");
+            break;
+        }
+        tmp = countryFindByName(root, name);
+        if (tmp != NULL)
+            citiesBiggerThan(tmp->head, min_population);
+        else
+            printf("No such country!\n");
+        
+        printf("\nSearch country: ");
+    }
 
     return EXIT_SUCCESS;
 }
@@ -51,13 +85,43 @@ countryPos countryAdd(countryPos root, countryPos current, char *name)
     if (NULL == root)
         return current;
 
-    else if (strcmp(name, root->name) > 0)
+    else if (strcmp(root->name, name) < 0)
         root->left = countryAdd(root->left, current, name);
 
-    else if (strcmp(name, root->name) < 0)
+    else if (strcmp(root->name, name) > 0)
         root->right = countryAdd(root->right, current, name);
 
     return root;
+}
+
+countryPos countryFindByName(countryPos root, char *name)
+{
+    if (NULL == root)
+        return NULL;
+
+    if (strcmp(root->name, name) == 0)
+        return root;
+
+    if (strcmp(root->name, name) < 0)
+        root = countryFindByName(root->left, name);
+    else
+        root = countryFindByName(root->right, name);
+
+    return root;
+}
+
+int countriesDelete(countryPos root)
+{
+    if (NULL == root)
+        return EXIT_SUCCESS;
+
+    countriesDelete(root->left);
+    countriesDelete(root->right);
+
+    citiesDelete(root->head);
+    free(root);
+
+    return EXIT_SUCCESS;
 }
 
 //-------CITIES SORTED LINKED LIST--------//
@@ -88,20 +152,58 @@ int cityAddInOrder(countryPos country, char *name, int population)
     if (NULL == newCity)
         return EXIT_FAILURE;
      
-    while (tmp->next != NULL && newCity->population <= tmp->next->population)
+    while (tmp->next != NULL && newCity->population >= tmp->next->population)
     {
         if (newCity->population == tmp->next->population)
         {
             if (strcmp(newCity->name, tmp->next->name) > 0)
                 tmp = tmp->next;
-            else
-                break;
+            break;
         }
         tmp = tmp->next;
     }
 
     newCity->next = tmp->next;
     tmp->next = newCity;
+
+    return EXIT_SUCCESS;
+}
+
+int citiesBiggerThan(cityPos head, int min_population)
+{
+    cityPos tmp = head->next;
+    
+    if(NULL == tmp)
+    {
+        printf("Empty cities list!\n");
+        return EXIT_SUCCESS;
+    }
+
+    while(tmp != NULL && tmp->population < min_population)
+        tmp = tmp->next;
+
+    puts("");
+    while(NULL != tmp)
+    {
+        printf("%s, population %d\n", tmp->name, tmp->population);
+        tmp = tmp->next;
+    }
+    
+    return EXIT_SUCCESS;
+}
+
+int citiesDelete(cityPos head)
+{
+
+    cityPos current = head->next;
+    cityPos tmp = NULL;
+
+    while (current != NULL)
+    {
+        tmp = current->next;
+        free(current);
+        current = tmp;
+    }
 
     return EXIT_SUCCESS;
 }
@@ -149,5 +251,3 @@ countryPos inputFromFile(countryPos root, char *fileName)
 
     return root;
 }
-
-//dodat provjere u input file i brisanje, napravit bez nepotrebnog malloca praznog heada
