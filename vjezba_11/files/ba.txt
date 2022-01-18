@@ -1,0 +1,3 @@
+Bridgetown 110000
+Bathsheba 1500
+Holetown 1500

@@ -1,0 +1,6 @@
+Harare 1500000
+Bulawayo 650000
+Chitungwiza 350000
+Mutare 180000
+AaGrad 180000
+CcGrad 180000
